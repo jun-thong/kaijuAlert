@@ -6,7 +6,8 @@
  * @author jun.thong@me.com (Jun Thong)
  */
 
-let logger          = require('winston');
+let logger          = require('winston'),
+    seqErrors           = require('../../../node_modules/sequelize/lib/errors');
 
 /**
  * Express error handler
@@ -24,8 +25,19 @@ module.exports.errorHandler = async (err, req, res, next) => {
         logger.error(err);
     }
 
-    (err.httpError) ? res.status(err.httpError) : res.status(500);
-    (err.httpError) ? res.render(err.httpError) : res.render('errors/500', { err: err });
+    let status;
+
+    switch(err.constructor.name){
+        case 'ValidationError' :
+            status = 403;
+            break;
+        default:
+            status = 500;
+            break;
+    }
+
+    res.status(status);
+    res.json({ error: err });
 };
 
 /**
