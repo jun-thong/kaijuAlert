@@ -5,7 +5,8 @@
   "author": "jun.thong@me.com <Jun Thong>",
   "licence": "UNLICENSED",
   "scripts": {
-    "start": "NODE_ENV=development node app.js"
+    "start": "NODE_ENV=development node app.js",
+    "test": "mocha --reporter spec --timeout 2000"
   },
   "dependencies": {
     "bcrypt": "^1.0.2",
@@ -32,6 +33,7 @@
   },
   "devDependencies": {
     "chance": "1.0.x",
-    "mocha": "^3.4.2"
+    "mocha": "^3.4.2",
+    "supertest": "3.0.x"
   }
 }

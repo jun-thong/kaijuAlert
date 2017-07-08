@@ -19,7 +19,7 @@ let passport        = require('passport'),
  * Then set a bearer token strategy for API calls.
  *
  */
-module.exports = function() {
+module.exports = () => {
     // setup local strategy
     passport.use('api-local', new LocalStrategy(
         {
@@ -86,14 +86,13 @@ let _localStrategyImpl = (username, password, done) => {
  * @param {Function} done
  * @private
  */
-let _getBearerStrategyImpl = (req, token, done) => {
+let _getBearerStrategyImpl = (token, done) => {
     logger.debug('auth._getBearerStrategyImpl(token: ' + token + ')');
     // I may store token in an array, different token for different device.
     // This app is still simple, just added this line to show i can think of this kind of details.
     if (token instanceof Array) token = token[0];
 
-    models.User.findOne({ where: { token: token } }).then(function(user){
-        // check if token exists.
+    models.User.findOne({ where: { token: token } }, { raw: true }).then(function(user){
         if(!user) return done(null, false, { message: 'loginInvalidToken' });
         return done(null, user);
     }).catch((err) => {

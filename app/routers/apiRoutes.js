@@ -34,5 +34,5 @@ module.exports = function(app){
 
     // finally apply the router to the app.
     app.use('/', router);
-    app.use('/', passport.authenticate('bearer'), routerAuth);
+    app.use('/', passport.authenticate('api-bearer'), routerAuth);
 };

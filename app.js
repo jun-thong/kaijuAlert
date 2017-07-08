@@ -16,6 +16,7 @@ let http        = require('http'),
     compress    = require('compression'),
     passport    = require('passport'),
     cfg         = require('config'),
+    passportConfig = require(path.join(__dirname, 'app/middlewares/passport/auth.js')),
     errorsHandler = require(path.join(__dirname, 'app/middlewares/errorHandlers/errorsHandler.js')).errorHandler,
     models      = require(path.join(__dirname, 'app/models/index.js'));
 
@@ -41,6 +42,9 @@ if(process.env.NODE_ENV === 'development') app.use(require(path.join(__dirname, 
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(passport.initialize());
+
+passportConfig();
 
 /*  =============================================================================
     Configure Routes
