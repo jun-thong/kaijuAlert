@@ -26,7 +26,8 @@ module.exports = function(sequelize, types) {
         token: { type: types.STRING, allowNull: false }
     }, {
         indexes: [
-            { name: 'nickname', fields: ['nickname'], type: 'UNIQUE' }
+            { name: 'nickname', fields: ['nickname'], type: 'UNIQUE' },
+            { name: 'token', field: ['token'], type: 'index' }
         ],
         hooks: {
             beforeCreate: _hashPassword,

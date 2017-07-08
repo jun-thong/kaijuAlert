@@ -4,11 +4,11 @@
  * Passport middleware configurations.
  *
  * @author jun.thong@me.com (Jun Thong)
- * @author 12rithy@gmail.com (Chanrithy Thim)
  */
 
 let passport        = require('passport'),
     LocalStrategy   = require('passport-local').Strategy,
+    BearerStrategy  = require('passport-bearer-strategy'),
 
     logger          = require('winston'),
     models          = require('../../models/index.js');
@@ -21,13 +21,16 @@ let passport        = require('passport'),
  */
 module.exports = function() {
     // setup local strategy
-    passport.use('www-local', new LocalStrategy(
+    passport.use('api-local', new LocalStrategy(
         {
             usernameField: 'mail',
             passwordField: 'password'
         },
         _localStrategyImpl
     ));
+
+    // Setup bearer token strategy
+    passport.use('api-bearer', new BearerStrategy(_getBearerStrategyImpl));
 
     passport.serializeUser(function(user, done){
         logger.debug('passport.serializeUser()');
@@ -54,14 +57,14 @@ module.exports = function() {
  * @param {Function} done
  * @private
  */
-let _localStrategyImpl = function(username, password, done){
+let _localStrategyImpl = (username, password, done) => {
     logger.debug('auth._localStrategyImpl()');
 
     models.User.findOne({ where: { mail: username } }).then(function(user){
         // check if user exists.
         if(!user) return done(null, false, { message: 'loginInvalidUser' });
 
-        user.comparePassword(password, function (err, isMatch) {
+        user.comparePassword(password, (err, isMatch) => {
             if (err) return done(null, false, { message: 'loginInvalidPassword' });
             if (isMatch) {
                 logger.info('User ' + user.nickname + ' successfully log-in', { id: user.id, mail: user.mail });
@@ -71,7 +74,29 @@ let _localStrategyImpl = function(username, password, done){
                 return done(null, false, { message: 'loginInvalidPassword' });
             }
         });
-    }).catch(function(err){
+    }).catch((err) => {
+        return done(err);
+    });
+};
+
+/**
+ * Define a bearer token strategy.
+ *
+ * @param {String} token
+ * @param {Function} done
+ * @private
+ */
+let _getBearerStrategyImpl = (req, token, done) => {
+    logger.debug('auth._getBearerStrategyImpl(token: ' + token + ')');
+    // I may store token in an array, different token for different device.
+    // This app is still simple, just added this line to show i can think of this kind of details.
+    if (token instanceof Array) token = token[0];
+
+    models.User.findOne({ where: { token: token } }).then(function(user){
+        // check if token exists.
+        if(!user) return done(null, false, { message: 'loginInvalidToken' });
+        return done(null, user);
+    }).catch((err) => {
         return done(err);
     });
 };

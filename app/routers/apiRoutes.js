@@ -9,7 +9,7 @@ let router                  = require('express').Router(),
     routerAuth              = require('express').Router(),
     passport                = require('passport'),
     attackController        = require('../controllers/attackController.js'),
-    ensureAuth              = require('../middlewares/passport/ensureAuthenticated.js'),
+    authController          = require('../controllers/authController.js'),
     wrap                    = require('../middlewares/errorHandlers/errorsHandler').wrapper;
 
 /**
@@ -22,11 +22,7 @@ let router                  = require('express').Router(),
  */
 module.exports = function(app){
     // passport routes
-    router.post('/login',
-        passport.authenticate('www-local', { successRedirect: '/dashboard',
-            failureRedirect: '/',
-            failureFlash: true })
-    );
+    router.post('/auth/login', wrap(authController.login));
 
     routerAuth.get('/attack/last', wrap(attackController.last));
     routerAuth.get('/attack/around/:lat/:lon', wrap(attackController.around));
@@ -38,7 +34,5 @@ module.exports = function(app){
 
     // finally apply the router to the app.
     app.use('/', router);
-    // TODO implement ensureAuth
-    //app.use('/', ensureAuth, routerAuth);
-    app.use('/', routerAuth);
+    app.use('/', passport.authenticate('bearer'), routerAuth);
 };
