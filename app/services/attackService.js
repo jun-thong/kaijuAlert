@@ -48,10 +48,11 @@ module.exports.getLastAttacks = async () => {
  * @returns {Promise.<*>}
  */
 module.exports.getAttackAroundUser = async (lat, lon) => {
+    logger.debug('attackService.getLastAttacks(lat: ' + lat + ', lon : ' + lon + ')');
     // Because I'll skip some sequelize sugar, i'll have to validate data manually.
     // Validator module only accept string, so i'll cast lat/lon to string just in case.
     // Also, i'll use min/max to check if it's a valid coordinate.
-    if(validator.isFloat(lat + '', { min: -90, max: 90 }) || validator.isFloat(lon + '', { min: -180, max: 180 })){
+    if(!validator.isFloat(lat + '', { min: -90, max: 90 }) || !validator.isFloat(lon + '', { min: -180, max: 180 })){
         // Why create a validation error myself when sequelize come with one built in ?
         // Allow me to keep a more coherent error handling.
         // Usually i'll provide an error message from an i18n system, but i'll do without to keep this project simple.
