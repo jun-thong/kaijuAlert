@@ -22,7 +22,8 @@ let sequelize = new Sequelize(cfg.get('SQL.DB'), cfg.get('SQL.USER'), cfg.get('S
             max: 5,
             min: 0,
             idle: 10000
-        }
+        },
+        logging: cfg.get('SQL.DEBUG')
     }),
     db        = {};
 

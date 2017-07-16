@@ -1,0 +1,20 @@
+{
+    "APP": {
+        "PORT": "8080",
+        "SESSION_SECRET": "@u:gJR%=h.?`H8T4.r2>H4O';95$_^",
+        "SEARCH_RADIUS": 30000
+    },
+
+    "SQL": {
+        "HOST": "192.168.0.17",
+        "DB": "kaijualert",
+        "PORT": "5432",
+        "USER": "dbuser",
+        "PASSWD": "dbuser",
+        "DEBUG": false
+    },
+
+    "LOG": {
+        "CONSOLE": false
+    }
+}

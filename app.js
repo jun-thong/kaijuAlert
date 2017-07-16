@@ -57,3 +57,5 @@ require(path.join(__dirname, '/app/routers/apiRoutes.js'))(app);
 app.use(errorsHandler);
 
 server.listen(cfg.get('APP.PORT'));
+
+module.exports = app;

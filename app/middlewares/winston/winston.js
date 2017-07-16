@@ -9,10 +9,9 @@ let winston         = require('winston'),
     cfg             = require('config');
 
 module.exports = function() {
+    winston.remove(winston.transports.Console);
     // Add console logger only for development.
     if (cfg.get('LOG.CONSOLE')) {
-        winston.remove(winston.transports.Console);
-
         winston.add(winston.transports.Console, {
             level: 'debug',
             colorize: true,
